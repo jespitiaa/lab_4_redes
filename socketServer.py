@@ -1,6 +1,7 @@
 import socket, select, sys
 import hashlib, binascii, os
 import json
+from _thread import *
 
 host = ''
 port = 8082
@@ -28,8 +29,21 @@ print("Despliegue correcto del servidor")
 s.listen(1000)
 print("Servidor listo")
 
-conn, addr = s.accept()
 
-print("Conectado con " + addr[0] + ":" + str(addr[1]))
+def threadCliente(conn):
+	conn.send("sapo")
+	while 1:
+		data = conn.recv(1024)
+		reply = "OK"
+		if not data:
+			break;
+		conn.sendall(reply)
+	conn.close()
 
-data = conn.recv(1024)
+
+
+
+while 1:
+	conn, addr = s.accept()
+	print("Conectado con " + addr[0] + ":" + str(addr[1]))
+	start_new_thread(threadCliente, (conn,))

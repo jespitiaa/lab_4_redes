@@ -32,9 +32,9 @@ except socket.error:
 	print("No se pudo establecer conexión")
 	sys.exit()
 	
-print("Se creó el socket")
+print("Se creo el socket")
 
-host = "localhost"
+host = ''
 port = 8082
 
 try: 
