@@ -2,22 +2,24 @@ import numpy as np
 import cv2
 import socket
 
-msgFromClient = "Hello UDP Server"
+msgFromClient = "Hello TCP Server"
 bytesToSend = str.encode(msgFromClient)
 serverAddressPort = ("127.0.0.1", 20001)
 bufferSize = 46080
 
 # Se crea un socket udp cliente
-UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+TCPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
 
 # se envia un mensaje al servidor para comenzar la conexion
-UDPClientSocket.sendto(bytesToSend, serverAddressPort)
+TCPClientSocket.connect(serverAddressPort)
+
+print('conn')
 
 isRecording=True
 s="".encode('ascii')
 while(True):
     #se reciven los paquetes transmitidos por el servidor
-    data, addr = UDPClientSocket.recvfrom(bufferSize)
+    data = TCPClientSocket.recv(bufferSize)
     #se concatenan los paquetes para formar threads
     s = s+data
     if len(s)==(46080*20):

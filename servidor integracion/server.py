@@ -5,16 +5,15 @@ import threading
 localIP     = "127.0.0.1"
 localPort   = 20001
 bufferSize  = 46080
-
-msgFromServer = "Hello UDP Client"
-bytesToSend = str.encode(msgFromServer)
 addresses=[]
+connections=[]
 
-#Se crea el socket udp del servidor
-UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+#Se crea el socket TCPdel servidor
+TCPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
 
 #Se inicia escuchar peticiones en el puerto localPort
-UDPServerSocket.bind((localIP, localPort))
+TCPServerSocket.bind((localIP, localPort))
+TCPServerSocket.listen(150)
 
 #se inicia la captura del video a transmitir
 cap = cv2.VideoCapture('bebecita.mp4')
@@ -26,13 +25,14 @@ class MyThread2(threading.Thread):
             rep, frame = cap.read()
             if rep == True:
                 for i in range(20):
-                    for ad in addresses:
+                    print(i)
+                    for conn in connections:
                         #se dividen los frames en paquetes que se transmiten a todas las direcciones de los clientes conectados
-                        UDPServerSocket.sendto(frame.flatten().tostring()[i*46080:(i+1)*46080], ad)
+                        conn.sendall(frame.flatten().tostring()[i*46080:(i+1)*46080])
             else:
                 break
 
-print("UDP server up and listening")   
+print("TCP server up and listening")   
 
 # Se crea un hilo que enviara capturas a los clientes conectados
 mythread2 = MyThread2() 
@@ -40,9 +40,10 @@ mythread2.start()
 
 while True:
     #Se reciben nuevas conexiones con clientes y se añaden a las direcciones a las cual se transmitira el video
-    bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
-    address = bytesAddressPair[1]
+    bytesAddressPair = TCPServerSocket.accept()
+    conn = bytesAddressPair[0]
+    address= bytesAddressPair[1]
     mythread2.isAlive()
     print(address)
     if address not in addresses:
-        addresses.append(address)
+        connections.append(conn)
