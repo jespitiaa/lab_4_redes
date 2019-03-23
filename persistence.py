@@ -4,6 +4,8 @@ uri = 'mongodb://admin:admin1@ds121026.mlab.com:21026/redes_auth_tcp'
 client=pymongo.MongoClient(uri)
 db = client.get_database["redes_auth_tcp"]
 users_collection=db.users
+def getUsers():
+    return users_collection.find({})
 def getUser(pUsername):
     user=users_collection.find_one({"username":pUsername})
 	return user
@@ -18,4 +20,4 @@ def deleteUser (pUsername):
         return false
     else:
         users_collection.deleteOne({"username": pUsername})
-        return true;	       
+        return true;
