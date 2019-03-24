@@ -40,7 +40,7 @@ if __name__ == "__main__":
 	while True:
 		#Se definen los dos sockets, el de la conexion y la entrada por consola para que el usuario envie informacion
 		socket_list = [sys.stdin, s]
-		read_sockets, write_sockets = select.select(socket_list, [] )
+		read_sockets, write_sockets, error_sockets = select.select(socket_list, [], [])
 		for sock in read_sockets:
 			#Este primer socket es el que establece la conexion efectiva con el servidor y recibe la informacion
 			if sock == s:
@@ -53,25 +53,27 @@ if __name__ == "__main__":
 					print("llego respuesta")
 					sys.stdout.write(data.decode())
 					
+					print(status)
 					#Caso en que el usuario ya este autorizado
-					if(resp.decode()=="Ya iniciaste sesion"):
+					if(data.decode()=="Ya iniciaste sesion"):
 						sys.exit()
 					
-					elif(resp.decode()== "Ingresa tu Username: "):
+					elif(data.decode()== "Ingresa tu Username: "):
 						status = 1
-					elif(resp.decode()== "Password: "):
-						status = 2		
-					elif(resp.decode()== "Usuario no existe"):
+					elif(data.decode()== "Password: "):
+						status = 2
+						print("mi contrasenia")
+					elif(data.decode()== "Usuario no existe"):
 						print("Para iniciar sesion escribe 1, para registrarte escribe 2")
 						status = 0
-					elif(resp.decode()== "Credenciales incorrectas"):
+					elif(data.decode()== "Credenciales incorrectas"):
 						print("Password: ")
 						status = 2
-					elif(resp.decode()== "Bienvenido"):
+					elif(data.decode()== "Bienvenido"):
 						sys.exit()
-					elif(resp.decode()== "Usuario creado"):
+					elif(data.decode()== "Usuario creado"):
 						sys.exit()
-					elif(resp.decode()== "Usuario ya existe"):
+					elif(data.decode()== "Usuario ya existe"):
 						print("Para iniciar sesion escribe 1, para registrarte escribe 2")
 						status = 0
 					prompt()
@@ -84,7 +86,7 @@ if __name__ == "__main__":
 				if(status == 1):
 					res = "user:" + msg
 				if(status == 2):
-					ress = "password:" + msg 
+					res = "password:" + msg 
 
 				s.send(res.encode())
 				

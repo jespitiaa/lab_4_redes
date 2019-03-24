@@ -28,35 +28,31 @@ if __name__ == "__main__":
 		pwdhash = hashlib.pbkdf2_hmac('sha512', provided_password.encode('utf-8'),salt.encode('ascii'), 100000)
 		pwdhash = binascii.hexlify(pwdhash).decode('ascii')
 		return pwdhash == stored_password
-	
-	
-	def broadcast(sock,msg):
-		for s in CONEXIONES:
-			if(s==sock):
-				continue
-			sock.send(msg)
 
 	#El arreglo va a indicar cuales sockets ya se autenticaron		
 	allowed_origins = []
+	socket_status = [0]
+	print(type(socket_status))
 	while True:
 		#Se guardan variables en arreglos para los sockets y el estado de cada uno (Empieza en 0 para todos)
 		read_sockets, write_sockets, error_sockets = select.select(CONEXIONES, [], [])
-		socket_status = numpy.zeros([len(read_sockets)], dtype=int)
 
 		for sock in read_sockets:
 			username = ""
 			pw = ""
-			index = read_sockets.index(sock)
+ 
 			#Acepta constantemente nuevas conexiones al servidor
 			if sock == server_socket:
 				sockfd, addr = server_socket.accept()
 				CONEXIONES.append(sockfd)
+				socket_status.append(0)
 				print("El cliente (%s, %s) está conectado" %addr)
 				
 			#Lee constantemente informacion enviada desde los clientes en la terminal	
 			else:
+				index = CONEXIONES.index(sock)
 				status = socket_status[index]
-				print(str(status)+" estado")
+				#print(str(status)+" estado")
 				#Define el flujo de informacion
 				try:
 					#Empieza recibiendo informacion del cliente
@@ -81,16 +77,20 @@ if __name__ == "__main__":
 						elif data.decode().startswith('user:'):
 							username = data.decode().split(":")[1]
 							#Se consulta si el usuario ya esta en la base de datos
+							print(username)
 							usuario = db.getUser(username)
+							print(usuario)
 							#Caso de inicio de sesion
 							if status == 1:
 								#El usuario ya debe existir para pedir la contrasenia. Si no existe, se indica al usuario
 								if usuario == None:
+									print("busca")
 									status = 0
 									print(str(status)+"-estado")
 									socket_status[index]= status
 									sock.send(b"Usuario no existe")
 								else:
+									print("contrasenia")
 									sock.send(b"Password: ")
 							#Caso de registro
 							elif status == 2:
@@ -133,6 +133,7 @@ if __name__ == "__main__":
 				except:
 					print("Client (%s,%s) is offline"%addr)
 					sock.close()
+					del socket_status[CONEXIONES.index(sock)]
 					CONEXIONES.remove(sock)
 					continue
 	#Al final del ciclo infinito (por interrupcion del teclado o falla de hardware) se cierra el socket
