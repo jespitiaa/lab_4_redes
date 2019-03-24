@@ -50,10 +50,11 @@ if __name__ == "__main__":
 			username = ""
 			pw = ""
  
+			print(sock)
 			#Acepta constantemente nuevas conexiones al servidor
 			if sock == server_socket:
 				sockfd, addr = server_socket.accept()
-				if len(CONEXIONES) < 200
+				if len(CONEXIONES) < 200:
 					CONEXIONES.append(sockfd)
 					socket_status.append(0)
 					print("El cliente (%s, %s) está conectado" %addr)

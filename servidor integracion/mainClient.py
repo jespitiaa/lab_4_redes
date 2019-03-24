@@ -1,6 +1,7 @@
 
 import socket, select, string, sys
 import hashlib, binascii, os
+import client
 
 #Este metodo va a permitir una interaccion dinamica con el usuario cada vez que deba ingresar informacion
 def prompt():
@@ -56,7 +57,7 @@ if __name__ == "__main__":
 					print(status)
 					#Caso en que el usuario ya este autorizado
 					if(data.decode()=="Ya iniciaste sesion"):
-						sys.exit()
+						client.getStream()
 					#Caso en que se solicite el usuario
 					elif(data.decode()== "Ingresa tu Username: "):
 						#Se cambia el estado para enviar el usuario en el formato adecuado
@@ -77,10 +78,10 @@ if __name__ == "__main__":
 						status = 2
 					#Caso en que la autenticacion fue exitosa
 					elif(data.decode()== "Bienvenido"):
-						sys.exit()
+						client.getStream()
 					#Caso en que la creacion del usuario fue exitosa
 					elif(data.decode()== "Usuario creado"):
-						sys.exit()
+						client.getStream()
 					#Caso en que el usuario que se quiere crear ya exista	
 					elif(data.decode()== "Usuario ya existe"):
 						#Se vuelve al estado inicial
