@@ -1,8 +1,8 @@
 
 import socket, select, string, sys
-import hashlib, binascii, os
+import hashlib, binascii, os, traceback
 import client
-
+print("importado")
 #Este metodo va a permitir una interaccion dinamica con el usuario cada vez que deba ingresar informacion
 def prompt():
 	sys.stdout.write('<you>')
@@ -28,15 +28,16 @@ def listVideos():
 
 if __name__ == "__main__":
 	#Se definen las caracteristicas basicas del socket donde se quiere conectar: Puerto, host, y protocolo (TCP=SOCK_STREAM)
-	host = "34.201.109.61"
+	host = "localhost"
 	port = 5000
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.settimeout(3)
+	s.settimeout(20)
 
 	#Se intenta establecer una conexion con el socket servidor
 	try:
 		s.connect((host, port))
 	except:
+		traceback.print_exc()
 		print("No se ha podido conectar al servidor")
 		sys.exit()
 

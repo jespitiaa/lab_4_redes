@@ -2,9 +2,9 @@ import numpy as np
 import cv2
 import socket
 
-def runClient(vid='1,2,3'):
+def runClient(vid):
     bytesToSend = str.encode(vid)
-    serverAddressPort = ("127.0.0.1", 20001)
+    serverAddressPort = ("localhost", 20001)
     bufferSize = 46080
 
     # Se crea un socket udp cliente
@@ -38,5 +38,3 @@ def runClient(vid='1,2,3'):
                 isRecording=True
     cap.release()
     cv2.destroyAllWindows()    
-
-runClient()
