@@ -17,6 +17,16 @@ def hash_password(password):
     pwdhash = binascii.hexlify(pwdhash)
     return (salt + pwdhash).decode('ascii')
 
+def listVideos():
+	sys.stdout.write('Los videos disponibles en el servidor son los siguientes:\n')
+	sys.stdout.write('1. Perrito bailando\n')
+	sys.stdout.write('2. \n')
+	sys.stdout.write('3. \n')
+	sys.stdout.write('4. \n')
+	sys.stdout.write('Para ver los videos, indica el numero o los numeros separados por coma\n')
+	sys.stdout.write('(ej:1,3,4)\n')
+	sys.stdout.flush()
+
 if __name__ == "__main__":
 	#Se definen las caracteristicas basicas del socket donde se quiere conectar: Puerto, host, y protocolo (TCP=SOCK_STREAM)
 	host = "localhost"
@@ -57,7 +67,8 @@ if __name__ == "__main__":
 					print(status)
 					#Caso en que el usuario ya este autorizado
 					if(data.decode()=="Ya iniciaste sesion"):
-						client.getStream()
+						status = 3
+						listVideos()
 					#Caso en que se solicite el usuario
 					elif(data.decode()== "Ingresa tu Username: "):
 						#Se cambia el estado para enviar el usuario en el formato adecuado
@@ -78,10 +89,12 @@ if __name__ == "__main__":
 						status = 2
 					#Caso en que la autenticacion fue exitosa
 					elif(data.decode()== "Bienvenido"):
-						client.getStream()
+						status = 3
+						listVideos()
 					#Caso en que la creacion del usuario fue exitosa
 					elif(data.decode()== "Usuario creado"):
-						client.getStream()
+						status = 3
+						listVideos()
 					#Caso en que el usuario que se quiere crear ya exista	
 					elif(data.decode()== "Usuario ya existe"):
 						#Se vuelve al estado inicial
@@ -98,7 +111,11 @@ if __name__ == "__main__":
 					res = "user:" + msg
 				if(status == 2):
 					res = "password:" + msg 
-
-				s.send(res.encode())
-				
-				prompt()
+				if(status == 3):
+					lista = msg.split(",")
+					for i in range (0,len(lista)):
+						lista[i] = lista[i].strip()
+					#Se llama el método de rafael con la lista como parametro
+				else:
+					s.send(res.encode())
+					prompt()
