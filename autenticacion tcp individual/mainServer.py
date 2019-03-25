@@ -1,5 +1,5 @@
 import socket, select, numpy
-import hashlib, binascii, os
+import hashlib, binascii, os, traceback
 import persistence as db
 
 if __name__ == "__main__":
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 			#Acepta constantemente nuevas conexiones al servidor
 			if sock == server_socket:
 				sockfd, addr = server_socket.accept()
-				if len(CONEXIONES) < 200
+				if len(CONEXIONES) < 200:
 					CONEXIONES.append(sockfd)
 					socket_status.append(0)
 					print("El cliente (%s, %s) está conectado" %addr)
@@ -89,7 +89,7 @@ if __name__ == "__main__":
 							#Se consulta si el usuario ya esta en la base de datos
 							print(username)
 							usuario = db.getUser(username)
-							print(usuario)
+							#print(usuario,"usuario")
 							#Caso de inicio de sesion
 							if status == 1:
 								#El usuario ya debe existir para pedir la contrasenia. Si no existe, se indica al usuario
@@ -116,10 +116,12 @@ if __name__ == "__main__":
 						#Se recibio la contrasenia
 						elif data.decode().startswith('password:'):
 							pw = data.decode().split(":")[1]
+							username = data.decode().split(":")[3]
 							#Si esta iniciando sesion, se debe validar que las credenciales coincidan
 							if(status==1):
 								usuario = db.getUser(username)
-								if verify_password(usuario.password, pw):
+								#print(usuario)
+								if pw == usuario["password"]:
 									sock.send(b"Bienvenido")
 									allowed_origins.append(sock)
 								else:
@@ -127,11 +129,14 @@ if __name__ == "__main__":
 							#Si esta registrandose, se crea un usuario con las credenciales indicadas y se inicia la sesion de forma automatica
 							elif(status==2):
 								#Crea el nuevo usuario
+								username = data.decode().split(":")[3]
+								print(username)
 								cred = {
 									"username": username,
 									"password": pw
 								}
-								db.createUser(cred, username)
+								a = db.createUser(cred, username)
+								print(db.getUser(username), "se crea")
 								sock.send(b"Usuario creado")
 						#Cuando el estado es 0 solo se puede mandar 1 o 2.
 						else:
@@ -140,6 +145,7 @@ if __name__ == "__main__":
 							
 				#Se tiene en cuenta el caso en que el cliente se desconecte		
 				except:
+					traceback.print_exc()
 					print("Client (%s,%s) is offline"%addr)
 					sock.close()
 					del socket_status[CONEXIONES.index(sock)]

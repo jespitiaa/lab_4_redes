@@ -36,7 +36,7 @@ if __name__ == "__main__":
 	
 	#La variable status indica si el cliente debe ingresar usuario(1), contrasenia(2), o no ha elegido (0)
 	status = 0
-	
+	user = ""
 	while True:
 		#Se definen los dos sockets, el de la conexion y la entrada por consola para que el usuario envie informacion
 		socket_list = [sys.stdin, s]
@@ -95,8 +95,9 @@ if __name__ == "__main__":
 				#Se formatea el envio de los datos de sesion
 				if(status == 1):
 					res = "user:" + msg
+					user = res
 				if(status == 2):
-					res = "password:" + msg 
+					res = "password:" + msg + ":" + user
 
 				s.send(res.encode())
 				
