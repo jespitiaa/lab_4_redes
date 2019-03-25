@@ -43,7 +43,7 @@ class MyThread2(threading.Thread):
 
         print('cliente '+str(x+1)+' termino')
 f=open("UDPClientResults.txt","a+")
-for x in range(0,5):
+for x in range(0,150):
     mythread2= MyThread2()
     numero=str(x+1)
     mythread2.darNombre(numero)
