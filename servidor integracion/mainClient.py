@@ -19,17 +19,16 @@ def hash_password(password):
 
 def listVideos():
 	sys.stdout.write('Los videos disponibles en el servidor son los siguientes:\n')
-	sys.stdout.write('1. Perrito bailando\n')
-	sys.stdout.write('2. \n')
-	sys.stdout.write('3. \n')
-	sys.stdout.write('4. \n')
-	sys.stdout.write('Para ver los videos, indica el numero o los numeros separados por coma\n')
-	sys.stdout.write('(ej:1,3,4)\n')
+	sys.stdout.write('1. Fragmento de los Simpsons\n')
+	sys.stdout.write('2. Intro super simple\n')
+	sys.stdout.write('3. Fragmento the big bang theory\n')
+	sys.stdout.write('Para ver los videos, indica el numero o los numeros separados por coma y sin espacios\n')
+	sys.stdout.write('(ej:1,3)\n')
 	sys.stdout.flush()
 
 if __name__ == "__main__":
 	#Se definen las caracteristicas basicas del socket donde se quiere conectar: Puerto, host, y protocolo (TCP=SOCK_STREAM)
-	host = "localhost"
+	host = "34.201.109.61"
 	port = 5000
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.settimeout(3)
@@ -113,7 +112,7 @@ if __name__ == "__main__":
 					res = "password:" + msg 
 				if(status == 3):
 					lista = msg
-					#Se llama el método de rafael con la lista como parametro
+					client.runClient(vid=lista)#Se llama el método de rafael con la lista como parametro
 				else:
 					s.send(res.encode())
 					prompt()
