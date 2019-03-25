@@ -27,16 +27,20 @@ class MyThread2(threading.Thread):
         while(True):
             msgFromServer = UDPClientSocket.recvfrom(bufferSize)
             inicio=datetime.datetime.now().time()
-            print("recibi paquete")
             recibidos=recibidos+1
-            print(str(recibidos))
-            if("{}".format(msgFromServer[0])=="fin"):
-                break
-                f.write("fin")
-                f.write("Se recibieron: "+str(recibidos)+ " paquetes en el cliente"+num)
-                fin=datetime.datetime.now().time()
-                delta=fin-inicio
-                f.write("Tiempo de atencion cliente: "+str(delta))
+            print(recibidos)
+            try:
+                if("{}".format(msgFromServer[0].decode())=="fin"):
+                    print("{}".format(msgFromServer[0].decode()))
+                    f.write("fin")
+                    f.write("Se recibieron: "+str(recibidos)+ " paquetes en el cliente"+num)
+                    fin=datetime.datetime.now().time()
+                    delta=fin-inicio
+                    f.write("Tiempo de atencion cliente: "+str(delta))
+                    break
+            except:
+                pass
+
         print('cliente '+str(x+1)+' termino')
 f=open("UDPClientResults.txt","a+")
 for x in range(0,5):
