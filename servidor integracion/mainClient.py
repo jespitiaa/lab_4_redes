@@ -112,9 +112,7 @@ if __name__ == "__main__":
 				if(status == 2):
 					res = "password:" + msg 
 				if(status == 3):
-					lista = msg.split(",")
-					for i in range (0,len(lista)):
-						lista[i] = lista[i].strip()
+					lista = msg
 					#Se llama el método de rafael con la lista como parametro
 				else:
 					s.send(res.encode())
