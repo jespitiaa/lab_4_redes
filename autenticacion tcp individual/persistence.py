@@ -55,7 +55,7 @@ def main(args):
 	print("usuario a insertar: {'username': 'prueba', 'password': 'juancjo12'}")
 	print(createUser({'username': 'prueba', 'password': 'juancjo12'}, "prueba"))
 	print("confirmacion")
-	print(type(getUser("prueba") ))
+	print(getUser("prueba"))
 	print("preuba de borrar usuario prueba")
 	print(deleteUser("prueba"))
 	print(getUsers())
