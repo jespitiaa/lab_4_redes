@@ -21,6 +21,9 @@ cap = cv2.VideoCapture('peq.mp4')
 f=open("UDPServerResults.txt","a+")
 class MyThread2(threading.Thread):
     def run(self):
+        inicio=0
+        fin=0
+        trans=0
         time.sleep(2)
         enviados=0
         while(True):
@@ -28,6 +31,7 @@ class MyThread2(threading.Thread):
             print(rep)
             # Sending a reply to client
             if rep == True:
+                inicio=time.time()
                 for i in range(20):
                     for ad in addresses:
                         UDPServerSocket.sendto(frame.flatten().tostring()[i*46080:(i+1)*46080], ad)
@@ -36,10 +40,11 @@ class MyThread2(threading.Thread):
                         #print(str(rep))
             else:
                 for ad in addresses:
-                    for num in range(10):
-                        UDPServerSocket.sendto(str.encode("fin"), ad)
+                    UDPServerSocket.sendto(str.encode("fin"), ad)
+                    fin=time.time()
+                    trans=fin-inicio
                     print("termino cliente"+ str(ad))
-                    f.write("Se enviaron: "+str(enviados)+" paquetes a direccion: "+str(ad))
+                    f.write("Se enviaron: "+str(enviados)+" paquetes a direccion: "+str(ad)+" Tiempo de transmision de "+str(trans)+"\r\n")
                 print('fin todos')
                 break
 
