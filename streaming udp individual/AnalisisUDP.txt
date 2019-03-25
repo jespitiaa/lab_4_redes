@@ -1,0 +1,1 @@
+Se perdieron 79990 paquetes de un total de 2067000 paquetes enviados; El tiempo promedio de atencion a un cliente es de 0.0351266558965 segundos; El throughput es de: 11101.9800486 paquetes/segundo
